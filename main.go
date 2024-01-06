@@ -1,23 +1,32 @@
 package main
 
-import "fmt"
-
-type Player struct {
-	name        string
-	health      int
-	attackPower float64
-}
-
-func (player Player) getHealth() int {
-	return player.health
-}
+import (
+	"fmt"
+)
 
 func main() {
-	player := Player{
-		name:        "Bob",
-		health:      101,
-		attackPower: 40.2}
-	// when I added "+" I see everything in %v
-	// format for int is "d"
-	fmt.Printf("health: %d\n", player.health())
+	numbers := []int{}
+	//otherNumbers := make([]int, 12)
+
+	numbers = append(numbers, 1)
+	numbers = append(numbers, 13)
+	fmt.Println(numbers)
+	//fmt.Println(otherNumbers)
+
+	//	users := map[string]int{}
+	//users := make(map[string]int)
+
+	//users["foo"] = 10
+	//users["bar"] = 12
+
+	//for key := range users {
+	//	fmt.Printf("the key %s\n", key)
+	//}
+
+	//age, ok := users["bar"]
+	//if !ok {
+	//	fmt.Println("baz not exist in the map")
+	//} else {
+	//	fmt.Println("exist in the map", age)}
+
 }
