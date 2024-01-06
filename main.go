@@ -2,15 +2,22 @@ package main
 
 import "fmt"
 
-var name = "Foo"
-var firstName string = "Foo"
+type Player struct {
+	name        string
+	health      int
+	attackPower float64
+}
 
-const (
-	version = 1
-	keyLen  = 10
-)
+func (player Player) getHealth() int {
+	return player.health
+}
 
 func main() {
-	name := "foo"
-	fmt.Println(name)
+	player := Player{
+		name:        "Bob",
+		health:      101,
+		attackPower: 40.2}
+	// when I added "+" I see everything in %v
+	// format for int is "d"
+	fmt.Printf("health: %d\n", player.health())
 }
