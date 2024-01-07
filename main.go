@@ -4,29 +4,45 @@ import (
 	"fmt"
 )
 
+type WeaponType int
+
+func (w WeaponType) String() string {
+	switch w {
+	case Sword:
+		return "SWORD"
+	case Axe:
+		return "AXE"
+	case Bow:
+		return "BOW"
+	}
+	return ""
+
+}
+
+const (
+	Axe WeaponType = iota // incremet
+	Sword
+	Bow
+	Knife
+)
+
+func getDamage(weponType WeaponType) int {
+	switch weponType {
+	case Axe:
+		return 100
+	case Sword:
+		return 90
+	case Bow:
+		return 60
+	case Knife:
+		return 40
+	default:
+		panic("weapon does not exist")
+	}
+}
+
 func main() {
-	numbers := []int{}
-	//otherNumbers := make([]int, 12)
-
-	numbers = append(numbers, 1)
-	numbers = append(numbers, 13)
-	fmt.Println(numbers)
-	//fmt.Println(otherNumbers)
-
-	//	users := map[string]int{}
-	//users := make(map[string]int)
-
-	//users["foo"] = 10
-	//users["bar"] = 12
-
-	//for key := range users {
-	//	fmt.Printf("the key %s\n", key)
-	//}
-
-	//age, ok := users["bar"]
-	//if !ok {
-	//	fmt.Println("baz not exist in the map")
-	//} else {
-	//	fmt.Println("exist in the map", age)}
-
+	fmt.Printf("damage to wepon ($s) ($d):\n", Axe, getDamage(Axe))
+	fmt.Printf("damage to wepon ($s) ($d):\n", Sword, getDamage(Sword))
+	fmt.Printf("damage to wepon ($s) ($d):\n", Bow, getDamage(Bow))
 }
