@@ -4,45 +4,37 @@ import (
 	"fmt"
 )
 
-type WeaponType int
-
-func (w WeaponType) String() string {
-	switch w {
-	case Sword:
-		return "SWORD"
-	case Axe:
-		return "AXE"
-	case Bow:
-		return "BOW"
-	}
-	return ""
-
-}
-
-const (
-	Axe WeaponType = iota // incremet
-	Sword
-	Bow
-	Knife
-)
-
-func getDamage(weponType WeaponType) int {
-	switch weponType {
-	case Axe:
-		return 100
-	case Sword:
-		return 90
-	case Bow:
-		return 60
-	case Knife:
-		return 40
-	default:
-		panic("weapon does not exist")
-	}
-}
-
 func main() {
-	fmt.Printf("damage to wepon ($s) ($d):\n", Axe, getDamage(Axe))
-	fmt.Printf("damage to wepon ($s) ($d):\n", Sword, getDamage(Sword))
-	fmt.Printf("damage to wepon ($s) ($d):\n", Bow, getDamage(Bow))
+	name := "Alice"
+
+	switch name {
+	case "Alice":
+		fmt.Println("The name Alice")
+	default:
+		fmt.Println("The name is default =>", name)
+	}
+
+	//users := map[string]int{
+	//	"foo":  1,
+	//	"dex":  2,
+	//	"baf":  3,
+	//	"max":  44,
+	//	"zkix": 73,
+	//}
+	//for key, value := range users {
+	//	fmt.Println("key %s value %d\n", key, value)
+	//}
+
+	//names := []string{"a", "b", "c", "d"}
+	//for _, name := range names {
+	//	if name == "a" {
+	//		break
+	//	}
+
+	//}
+	//fmt.Println("break out of loop")
+
+	//for i := 0; i < len(numbers); i++ {
+	//	fmt.Println(numbers[i])
+
 }
