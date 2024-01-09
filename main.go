@@ -4,37 +4,35 @@ import (
 	"fmt"
 )
 
+type NumberStoter interface {
+	GetAll() ([]int, error)
+	Put(int) error
+}
+
+type ApiServer struct {
+	numberStoter NumberStoter
+}
+
+type MongoDbNmumberStrore struct {
+	// some values
+}
+
+func (m MongoDbNmumberStrore) GetAll() ([]int, error) {
+	return []int{1, 2, 3, 4}, nil
+}
+
+func (m MongoDbNmumberStrore) Put(number int) error {
+	fmt.Println("Store the number ito the db storage")
+	return nil
+}
+
 func main() {
-	name := "Alice"
-
-	switch name {
-	case "Alice":
-		fmt.Println("The name Alice")
-	default:
-		fmt.Println("The name is default =>", name)
+	apiServer := ApiServer{
+		numberStoter: MongoDbNmumberStrore{},
 	}
-
-	//users := map[string]int{
-	//	"foo":  1,
-	//	"dex":  2,
-	//	"baf":  3,
-	//	"max":  44,
-	//	"zkix": 73,
-	//}
-	//for key, value := range users {
-	//	fmt.Println("key %s value %d\n", key, value)
-	//}
-
-	//names := []string{"a", "b", "c", "d"}
-	//for _, name := range names {
-	//	if name == "a" {
-	//		break
-	//	}
-
-	//}
-	//fmt.Println("break out of loop")
-
-	//for i := 0; i < len(numbers); i++ {
-	//	fmt.Println(numbers[i])
-
+	numbers, err := apiServer.numberStoter.GetAll()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(numbers)
 }
