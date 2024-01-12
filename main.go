@@ -1,32 +1,25 @@
 package main
 
-import "fmt"
-
-type Color int
-
-// fmt.Stringer
-func (c Color) String() string {
-	switch c {
-	case ColorBlue:
-		return "Blue"
-	case ColorBlack:
-		return "Black"
-	case ColorYellow:
-		return "Yellow"
-	case ColorPink:
-		return "Pink"
-	default:
-		panic("invalid color given")
-	}
+type Storage interface {
+	Get(id int) (any, error)
+	Put(id int, val any) error
 }
 
-const (
-	ColorBlue Color = iota
-	ColorBlack
-	ColorYellow
-	ColorPink
-)
+type BobStorage struct{}
+
+func (s *BobStorage) Get(id int) (any, error) {
+	return nil, nil
+}
+func (s *BobStorage) Put(id int) (any, error) {
+	return nil, nil
+}
+
+type Server struct {
+	store Storage
+}
 
 func main() {
-	fmt.Println("the color is ", ColorBlack)
+	s := &Server{}
+	s.store.Get(1)
+	s.store.Put(1, "bob")
 }
