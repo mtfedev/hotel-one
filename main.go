@@ -1,40 +1,28 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-type Putter interface {
-	Put(id int, val any) error
-	fmt.Stringer
-}
-type Storage interface {
-	Get(id int) (any, error)
-	Putter
-}
+type TransformFunc func(s string) string
 
-type simpePutter struct{}
-
-func (*simpePutter) String() string { return "" }
-func (s *simpePutter) Put(id int, val any) error {
-	return nil
+func Uppercase(s string) string {
+	return strings.ToUpper(s)
 }
 
-type BobStorage struct{}
-
-func (s *BobStorage) Get(id int) (any, error) {
-	return nil, nil
-}
-func (s *BobStorage) Put(id int, val any) error {
-	return nil
+func Prefixer(prefix string) TransformFunc {
+	return func(s string) string {
+		return prefix + s
+	}
 }
 
-type Server struct {
-	store Storage
-}
-
-func updateValue(id int, val any, p Putter) error {
-	return p.Put(id, val)
+func transformString(s string, fn TransformFunc) string {
+	return fn(s)
 }
 func main() {
-	simpePutter := &simpePutter{}
-	updateValue(1, "bob", s.store)
+	fmt.Println(transformString("hello Max!", Uppercase))
+	fmt.Println(transformString("hello Max!", Prefixer("FOO_")))
+	fmt.Println(transformString("hello Max!", Prefixer("Bar_")))
+
 }
