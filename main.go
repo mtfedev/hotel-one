@@ -1,28 +1,32 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
-type TransformFunc func(s string) string
-
-func Uppercase(s string) string {
-	return strings.ToUpper(s)
+type CustomMap[K comparable, V any] struct {
+	data map[K]V
 }
 
-func Prefixer(prefix string) TransformFunc {
-	return func(s string) string {
-		return prefix + s
+func (m *CustomMap[K, V]) Inster(k K, v V) error {
+	m.data[k] = v
+	return nil
+}
+func NewCustomMap[K comparable, V any]() *CustomMap[K, V] {
+	return &CustomMap[K, V]{
+		data: make(map[K]V),
 	}
 }
 
-func transformString(s string, fn TransformFunc) string {
-	return fn(s)
+func cup[T any, B any](val T, x B) {
+	fmt.Println(val)
 }
-func main() {
-	fmt.Println(transformString("hello Max!", Uppercase))
-	fmt.Println(transformString("hello Max!", Prefixer("FOO_")))
-	fmt.Println(transformString("hello Max!", Prefixer("Bar_")))
 
+func main() {
+
+	//	m1 := NewCustomMap[string, int]()
+	//	m1.Inster("bar", 1)
+	//	m1.Inster("nor", 2)
+
+	//	m2 := NewCustomMap[int, float64]()
+	//	m2.Inster(2, 9.33)
+	//m2.Inster(3, 100.2313)
 }
