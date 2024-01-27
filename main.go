@@ -6,20 +6,25 @@ import (
 )
 
 func main() {
-	// 1 unbuffered channel 0 book
-	// 2 buffered channel 10 books
-	//resultch := make(chan string, 10)  ->buffered channel
-	resultch := make(chan string) // ->unbuffered channel
-	resultch <- "foo"             // -> if now Full ->ITTT WILL BLOCK -> block HERE
-	// this coe below will never execute !!!!
-	result := <-resultch
-	fmt.Println(result)
+	msgch := make(chan string, 128)
+	msgch <- "A"
+	msgch <- "B"
+	msgch <- "C"
+	close(msgch)
 
-	//result := fetchResource(1)
-	//fmt.Println("The result:", result)
-	// asynk
-	//go fetchResource()
+	for {
+		msg, ok := <-msgch
+		if !ok {
+			break
+		}
+		fmt.Println("the message ->", msg)
+	}
 
+	// This piece of code is our consumer
+	//for msg := range msgch {
+	//	fmt.Println("the massage ->", msg)
+	//}
+	//fmt.Println("done reading all the messages from the channel!")
 }
 
 func fetchResource(n int) string {
