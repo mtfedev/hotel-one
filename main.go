@@ -1,54 +1,104 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 )
 
+type UserProfile struct {
+	ID       int
+	Comments []string
+	Likes    int
+	Friends  []int
+}
+
 func main() {
 	start := time.Now()
-	ctx := context.WithValue((context.Background()), "username", "Bob")
-	userID, err := fetchUserID(ctx)
+	userProfile, err := handleGetUserProfile(10)
 	if err != nil {
 		log.Fatal(err)
+
 	}
-	fmt.Printf("the response took %v -> &+v\n:", time.Since(start), userID)
+	fmt.Println(userProfile)
+	fmt.Println("fetching th euser profile took", time.Since(start))
 }
 
-func fetchUserID(ctx context.Context) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
-	defer cancel()
+type Response struct {
+	data any
+	err  error
+}
 
-	val := ctx.Value("username")
-	fmt.Println("the value =", val)
+func handleGetUserProfile(id int) (*UserProfile, error) {
+	var (
+		respch = make(chan Response, 3)
+		wg     = &sync.WaitGroup{}
+	)
+	// we aer doing 3 request inside theri own gorotine
+	go getComments(id, respch, wg)
+	go getLikes(id, respch, wg)
+	go getFriends(id, respch, wg)
+	// adding 3 to the waitgroup
+	wg.Add(3)
+	wg.Wait() // block until the wg counter = 0 we unlock
+	close(respch)
 
-	type result struct {
-		userId string
-		err    error
-	}
-	resultch := make(chan result, 1)
+	// keep ranging. But when to stop??
+	userProfile := &UserProfile{}
+	for resp := range respch {
+		if resp.err != nil {
+			return nil, resp.err
 
-	go func() {
-		res, err := thirdpartyHTTPCall()
-		resultch <- result{
-			userId: res,
-			err:    err,
 		}
-	}()
-	select {
-	//Done()
-	//1 the context timeout is exceeded
-	//2 the context has been maually canceled -> Cancel()
-	case <-ctx.Done():
-		return "", ctx.Err()
-	case res := <-resultch:
-		return res.userId, res.err
+		switch msg := resp.data.(type) {
+		case int:
+			userProfile.Likes = msg
+		case []int:
+			userProfile.Friends = msg
+		case []string:
+			userProfile.Comments = msg
+		}
+
 	}
+	return userProfile, nil
 }
 
-func thirdpartyHTTPCall() (string, error) {
-	time.Sleep(time.Millisecond * 90)
-	return "user id 1 ", nil
+func getComments(id int, respch chan Response, wg *sync.WaitGroup) {
+
+	time.Sleep(time.Millisecond * 200)
+	comments := []string{
+		"Hey, that was great",
+		"Yeah Buddy",
+		"Ow, I didn't know that",
+	}
+	respch <- Response{
+		data: comments,
+		err:  nil,
+	}
+	// work is done
+	wg.Done()
+}
+
+func getLikes(id int, respch chan Response, wg *sync.WaitGroup) {
+	time.Sleep(time.Millisecond * 200)
+	respch <- Response{
+		data: 11,
+		err:  nil,
+	}
+	// work is done
+	wg.Done()
+
+}
+
+func getFriends(id int, respch chan Response, wg *sync.WaitGroup) {
+	time.Sleep(time.Millisecond * 100)
+	friendIds := []int{12, 24, 255, 455}
+	respch <- Response{
+		data: friendIds,
+		err:  nil,
+	}
+	// work is done
+	wg.Done()
+
 }
