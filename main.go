@@ -1,29 +1,40 @@
 package main
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
-func main() {
-	textch := make(chan string, 128)
-	textch <- "A"
-	textch <- "G"
-	textch <- "F"
-	close(textch)
-
-	//	for {
-	//		msg, ok := <-textch
-	//		if !ok {
-	//			break
-	//		}
-	//	}
-	for msg := range textch {
-		fmt.Println("the message =", msg)
-	}
+type Position struct {
+	x, y int
 }
 
-func fetchResourse(n int) string {
-	time.Sleep(time.Second * 2)
-	return fmt.Sprint("result %d", n)
+type Entity struct {
+	name    string
+	id      string
+	version string
+
+	Position
+}
+
+type SpecialEntity struct {
+	Entity
+	specialFiled float64
+}
+
+func main() {
+	e := SpecialEntity{
+		specialFiled: 55.34,
+		Entity: Entity{
+			name:    "my house",
+			version: "2.0",
+			Position: Position{
+				x: 233,
+				y: 525,
+			},
+		},
+	}
+
+	e.id = "some id"
+	e.name = "Bob"
+	e.x = 434
+	e.y = 222
+	fmt.Printf("%+v\n", e.Position)
 }
