@@ -1,7 +1,7 @@
 build:
 	go build -o bin/api
 
-run:build
+run: build
 	./bin/api
 
 test:
