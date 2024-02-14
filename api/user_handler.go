@@ -9,9 +9,8 @@ func HandleGetUsers(c *fiber.Ctx) error {
 	u := types.User{
 		FirstName: "James",
 		LastName:  "at the watercooler",
-		return c.JSON(u)
 	}
-	return c.JSON("James")
+	return c.JSON(u)
 }
 
 func HandleGetUser(c *fiber.Ctx) error {
