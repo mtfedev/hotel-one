@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/mtfedev/hotel-one/api"
 )
 
 func main() {
@@ -13,11 +14,7 @@ func main() {
 	app := fiber.New()
 	apiv1 := app.Group("api/v1")
 
-	app.Get("/foo", handelFoo)
-	apiv1.Get("/user")
+	apiv1.Get("/user", api.HandleGetUsers)
+	apiv1.Get("/user/:id", api.HandleGetUser)
 	app.Listen(*listerAddr)
-}
-
-func handelFoo(c *fiber.Ctx) error {
-	return c.JSON(map[string]string{"msg": "working just fine"})
 }
