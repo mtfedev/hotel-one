@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/api"
+	"github.com/phuslu/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -17,7 +18,7 @@ func main() {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
 	if err != nil {
 		panic(err)
-		log.Faral(err)
+		log.Fatal(err)
 	}
 	fmt.Println(client)
 
