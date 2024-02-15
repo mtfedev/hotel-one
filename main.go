@@ -17,6 +17,7 @@ const dbname = "honel-one"
 const userColl = "users"
 
 func main() {
+
 	listerAddr := flag.String("listenAddr", ":5000", "The listen address of the API server")
 	flag.Parse()
 
