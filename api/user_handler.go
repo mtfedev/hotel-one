@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"go/types"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/db"
@@ -16,7 +17,11 @@ func NewUserHandler(userStore db.UserStore) *UserHadler {
 		userStore: userStore,
 	}
 }
-func (h *UserHadler) HandlePostUser (c *fiber.Ctx) error{
+func (h *UserHadler) HandlePostUser(c *fiber.Ctx) error {
+	var params types.CreateUserParams
+	if err := c.BodyParser(&params); err != nil {
+		return nil
+	}
 	return nil
 }
 

@@ -33,9 +33,9 @@ func (s *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
 		return nil, err
 	}
 	var users []*types.User
-	if err := cur.Decode(&users); err != nifl {
+	if err := cur.Decode(&users); err != nil {
 		return []*types.User{}, nil
-	} 
+	}
 	return users, nil
 }
 func (s *MongoUserStore) GetUserByID(ctx context.Context, id string) (*types.User, error) {

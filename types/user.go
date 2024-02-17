@@ -1,8 +1,10 @@
 package types
 
-const {
+import "golang.org/x/crypto/bcrypt"
+
+const (
 	bcryptCost = 12
-}
+)
 
 type CreateUSerParams struct {
 	ID        string `json:"id,omitempty"`
@@ -21,5 +23,14 @@ type User struct {
 }
 
 func NewUserFromParams(params CreateUSerParams) (*User, error) {
-	  encpw, err := bsrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
-} 
+	encpw, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
+	if err != nil {
+		return nil, err
+	}
+	return &User{
+		FirstName:         params.FirstName,
+		LastName:          params.LastName,
+		Email:             params.Email,
+		EncryptedPassword: string(encpw),
+	}, nil
+}
