@@ -1,10 +1,9 @@
 package api
 
 import (
-	"go/types"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/db"
+	"github.com/mtfedev/hotel-one/types"
 )
 
 type UserHadler struct {
@@ -25,7 +24,7 @@ func (h *UserHadler) HandlePostUser(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	insertedUser, err := h.userStore.CreateUser(c.Context(), user)
+	insertedUser, err := h.userStore.InsertUser(c.Context(), user)
 	if err != nil {
 		return err
 	}
