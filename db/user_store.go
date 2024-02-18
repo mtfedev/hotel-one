@@ -21,6 +21,11 @@ type MongoUserStore struct {
 	coll   *mongo.Collection
 }
 
+// CreateUser implements UserStore.
+func (*MongoUserStore) CreateUser(context.Context, *types.User) (*types.User, error) {
+	panic("unimplemented")
+}
+
 func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 	return &MongoUserStore{
 		client: client,

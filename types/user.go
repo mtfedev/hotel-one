@@ -6,7 +6,7 @@ const (
 	bcryptCost = 12
 )
 
-type CreateUSerParams struct {
+type CreateUserParams struct {
 	ID        string `json:"id,omitempty"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -22,7 +22,7 @@ type User struct {
 	EncryptedPassword string `bson:"EncryptedPassword" json:"-"`
 }
 
-func NewUserFromParams(params CreateUSerParams) (*User, error) {
+func NewUserFromParams(params CreateUserParams) (*User, error) {
 	encpw, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcryptCost)
 	if err != nil {
 		return nil, err

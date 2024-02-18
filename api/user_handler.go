@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"go/types"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,9 +19,17 @@ func NewUserHandler(userStore db.UserStore) *UserHadler {
 func (h *UserHadler) HandlePostUser(c *fiber.Ctx) error {
 	var params types.CreateUserParams
 	if err := c.BodyParser(&params); err != nil {
-		return nil
+		return err
 	}
-	return nil
+	user, err := types.NewUserFromParams(params)
+	if err != nil {
+		return err
+	}
+	insertedUser, err := h.userStore.CreateUser(c.Context(), user)
+	if err != nil {
+		return err
+	}
+	return c.JSON(insertedUser)
 }
 
 func (h *UserHadler) HandleGetUser(c *fiber.Ctx) error {
@@ -41,6 +48,5 @@ func (h *UserHadler) HandleGetUsers(c *fiber.Ctx) error {
 	if err != nil {
 		return nil
 	}
-	fmt.Println(users)
 	return c.JSON(users)
 }
