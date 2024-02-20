@@ -23,25 +23,25 @@ type CreateUserParams struct {
 	Password  string `json:"password"`
 }
 
-func (params CreateUserParams) Validate() []error {
-	errors := []error{}
+func (params CreateUserParams) Validate() map[string]string {
+	errors := map[string]string{}
 	if len(params.FirstName) < minFirstnameLen {
-		errors = append(errors, fmt.Errorf("firstName length should be at lesast %d characters", minFirstnameLen))
+		errors["fisrtName"] = fmt.Sprintf("firstName length should be at lesast %d characters", minFirstnameLen)
 	}
 	if len(params.LastName) < minLastnameLen {
-		errors = append(errors, fmt.Errorf("LastName length should be at lesast %d characters", minLastnameLen))
+		errors["lastName"] = fmt.Sprintf("LastName length should be at lesast %d characters", minLastnameLen)
 	}
 	if len(params.Password) < minPasswodLen {
-		errors = append(errors, fmt.Errorf("password length should be at lesast %d characters", minPasswodLen))
+		errors["password"] = fmt.Sprintf("password length should be at lesast %d characters", minPasswodLen)
 	}
 	if !isEmailValid(params.Email) {
-		errors = append(errors, fmt.Errorf("email is invalid"))
+		errors["email"] = fmt.Sprintf("email is invalid")
 	}
 	return errors
 }
 
 func isEmailValid(e string) bool {
-	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	emailRegex := regexp.MustCompile(`a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return emailRegex.MatchString(e)
 }
 
