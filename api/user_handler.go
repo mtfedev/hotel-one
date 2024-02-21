@@ -1,9 +1,14 @@
 package api
 
 import (
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/db"
 	"github.com/mtfedev/hotel-one/types"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserHadler struct {
@@ -16,10 +21,27 @@ func NewUserHandler(userStore db.UserStore) *UserHadler {
 	}
 }
 func (h *UserHadler) HandlePutUser(c *fiber.Ctx) error {
-	return nil
+	var (
+		//values bson.M
+		params types.UpateUserParams
+		userID = c.Params("id")
+	)
+	oid, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return err
+	}
+	if err := c.BodyParser(&params); err != nil {
+		return err
+	}
+	filter := bson.M{"_id": oid}
+	if err := h.userStore.UpdateUser(c.Context(), filter, params); err != nil {
+		return err
+	}
+	return c.JSON(map[string]string{"update": userID})
 }
 func (h *UserHadler) HandleDeleteUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
+
 	if err := h.userStore.DeleteUser(c.Context(), userID); err != nil {
 		return err
 	}
@@ -51,8 +73,10 @@ func (h *UserHadler) HandleGetUser(c *fiber.Ctx) error {
 	)
 	user, err := h.userStore.GetUserByID(c.Context(), id)
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return c.JSON(map[string]string{"error": "not found"})
+		}
 		return err
-		mongo.
 	}
 	return c.JSON(user)
 }

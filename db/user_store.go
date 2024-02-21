@@ -16,16 +16,11 @@ type UserStore interface {
 	GetUsers(context.Context) ([]*types.User, error)
 	InsertUser(context.Context, *types.User) (*types.User, error)
 	DeleteUser(context.Context, string) error
-	UpdateUser(context.Context, bson.M) error
+	UpdateUser(ctx context.Context, filter bson.M, params types.UpateUserParams) error
 }
 type MongoUserStore struct {
 	client *mongo.Client
 	coll   *mongo.Collection
-}
-
-// CreateUser implements UserStore.
-func (*MongoUserStore) CreateUser(context.Context, *types.User) (*types.User, error) {
-	panic("unimplemented")
 }
 
 func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
@@ -34,6 +29,21 @@ func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 		coll:   client.Database(DBNAME).Collection(userColl),
 	}
 }
+func (s *MongoUserStore) UpdateUser(ctx context.Context, filter bson.M, params types.UpateUserParams) error {
+
+	update := bson.D{
+		{
+			"$set", params.ToBSONM(),
+		},
+	}
+
+	_, err := s.coll.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *MongoUserStore) DeleteUser(ctx context.Context, id string) error {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
