@@ -20,23 +20,36 @@ func main() {
 	}
 
 	hotelStore := db.NewMongoHotelStore(client, db.DBNAME)
+	roomStore := db.NewMongoRoomStore(client, db.DBNAME)
 
 	hotel := types.Hotel{
 		Name:     "Ballucia",
 		Location: "Paris",
 	}
-
-	room := types.Room{
-		Type:      types.SingleRoomType,
-		BasePrise: 88.9,
+	rooms := []types.Room{
+		{
+			Type:      types.SingleRoomType,
+			BasePrise: 88.9,
+		}, {
+			Type:      types.SingleRoomType,
+			BasePrise: 88.9,
+		}, {
+			Type:      types.SeaSideRoomType,
+			BasePrise: 123.9,
+		},
 	}
 
 	insertedHotel, err := hotelStore.InsertHotel(ctx, &hotel)
 	if err != nil {
 		log.Fatal(err)
 	}
+	for _, room := range rooms {
+		room.HotelID = insertedHotel.ID
+		insertedRoom, err := roomStore.InsertRoom(ctx, &room)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	room.HotelID = insertedHotel.ID
-
-	fmt.Println(insertedHotel)
+		fmt.Println(insertedRoom)
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/mtfedev/hotel-one/types"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -30,5 +31,8 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 		return nil, err
 	}
 	room.ID = resp.InsertedID.(primitive.ObjectID)
-	return hotel, nil
+	filter := bson.M{"_id": room.HotelID}
+	update := bson.M{"%push", bson.M{"rooms": room.ID}}
+	if err := 
+	return room, nil
 }
