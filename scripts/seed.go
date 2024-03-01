@@ -7,6 +7,7 @@ import (
 
 	"github.com/mtfedev/hotel-one/db"
 	"github.com/mtfedev/hotel-one/types"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -19,12 +20,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hotelStore := db.NewMongoHotelStore(client, db.DBNAME)
-	roomStore := db.NewMongoRoomStore(client, db.DBNAME)
+	hotelStore := db.NewMongoHotelStore(client)
+	roomStore := db.NewMongoRoomStore(client, hotelStore)
 
 	hotel := types.Hotel{
 		Name:     "Ballucia",
 		Location: "Paris",
+		Rooms:    []primitive.ObjectID{},
 	}
 	rooms := []types.Room{
 		{
