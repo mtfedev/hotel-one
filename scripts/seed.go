@@ -20,8 +20,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hotelStore := db.NewMongoHotelStore(client)
-	roomStore := db.NewMongoRoomStore(client, hotelStore)
+	hotelStore := db.NewMongoHotelStore(client)))
+	roomStore := db.NewMongoRoomStore(client, hotelStore) // 3:45
 
 	hotel := types.Hotel{
 		Name:     "Ballucia",
