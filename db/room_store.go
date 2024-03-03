@@ -16,6 +16,8 @@ type RoomStore interface {
 type MongoRoomStore struct {
 	client *mongo.Client
 	coll   *mongo.Collection
+
+	HotelStore
 }
 
 func NewMongoRoomStore(client *mongo.Client, hotelStore, HotHotelStore) *MongoRoomStore {

@@ -12,16 +12,35 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func main() {
-	ctx := context.Background()
+var (
+	client     *mongo.Client
+	roomStore  db.RoomStore
+	hotelStore db.HotelStore
+	ctx        = context.Background()
+)
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
-	if err != nil {
-		log.Fatal(err)
+func seedHotel(name, location) error {
+	hotel := types.Hotel{
+		Name:     "Ballucia",
+		Location: "Paris",
+		Rooms:    []primitive.ObjectID{},
+	}
+	rooms := []types.Room{
+		{
+			Type:      types.SingleRoomType,
+			BasePrise: 88.9,
+		}, {
+			Type:      types.SingleRoomType,
+			BasePrise: 88.9,
+		}, {
+			Type:      types.SeaSideRoomType,
+			BasePrise: 123.9,
+		},
 	}
 
-	hotelStore := db.NewMongoHotelStore(client)))
-	roomStore := db.NewMongoRoomStore(client, hotelStore) // 3:45
+}
+
+func main() {
 
 	hotel := types.Hotel{
 		Name:     "Ballucia",
@@ -54,4 +73,18 @@ func main() {
 
 		fmt.Println(insertedRoom)
 	}
+}
+
+func init() {
+	var err error
+	client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DBURI))
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := client.Database(db.DBNAME).Drop(ctx); err != nil {
+		log.Fatal(err)
+	}
+	hotelStore = db.NewMongoHotelStore(client)
+	roomStore = db.NewMongoRoomStore(client, hotelStore)
+
 }
