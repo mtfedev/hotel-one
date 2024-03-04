@@ -20,10 +20,10 @@ type MongoRoomStore struct {
 	HotelStore
 }
 
-func NewMongoRoomStore(client *mongo.Client, hotelStore, HotHotelStore) *MongoRoomStore {
+func NewMongoRoomStore(client *mongo.Client, hotelStore HotelStore) *MongoRoomStore {
 	return &MongoRoomStore{
-		client: client,
-		coll:   client.Database(DBNAME).Collection("rooms"),
+		client:     client,
+		coll:       client.Database(DBNAME).Collection("rooms"),
 		HotelStore: hotelStore,
 	}
 }
@@ -35,9 +35,9 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 	}
 	room.ID = resp.InsertedID.(primitive.ObjectID)
 	filter := bson.M{"_id": room.HotelID}
-	update := bson.M{"%push", bson.M{"rooms": room.ID}}
-	if err := s.HotelStore.Update(ctx, filter, update); err != nil{
-		return nil, err   
+	update := bson.M{"&push": bson.M{"rooms": room.ID}}
+	if err := s.HotelStore.Update(ctx, filter, update); err != nil {
+		return nil, err
 	}
-	return room, nil 
+	return room, nil
 }
