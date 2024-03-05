@@ -20,6 +20,11 @@ type MongoHotelStore struct {
 	coll   *mongo.Collection
 }
 
+// Hotel implements HotelStore.
+func (s *MongoHotelStore) Hotel(context.Context, *types.Hotel) (*types.Hotel, error) {
+	panic("unimplemented")
+}
+
 func NewMongoHotelStore(client *mongo.Client) *MongoHotelStore {
 	return &MongoHotelStore{
 		client: client,
