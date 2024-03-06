@@ -1,8 +1,6 @@
 package api
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/db"
 )
@@ -19,17 +17,11 @@ func NewHotelHandler(hs db.HotelStore, rs db.RoomStore) *HotelHandler {
 	}
 }
 
-type HotelQueryParams struct {
-	Rooms bool
+func (h *HotelHandler) HandlerGetrooms(c *fiber.Ctx) error {
+	//4:13
 }
 
 func (h *HotelHandler) HandlerGetHotels(c *fiber.Ctx) error {
-	var qparams HotelQueryParams
-	if err := c.QueryParser(&qparams); err != nil {
-		return err
-	}
-	fmt.Println(qparams)
-
 	hotels, err := h.hotelStore.GetHotels(c.Context(), nil)
 	if err != nil {
 		return err
