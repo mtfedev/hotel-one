@@ -5,3 +5,7 @@ const (
 	TestDBNAME = "hotel-one-test"
 	DBURI      = "mongodb://localhost:27017"
 )
+
+type Store struct {
+	//18.45
+}
