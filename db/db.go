@@ -7,5 +7,7 @@ const (
 )
 
 type Store struct {
-	//18.45
+	User UserStore
+	Hotel HotelStore
+	Room RoomStore
 }
