@@ -13,7 +13,7 @@ type HotelStore interface {
 	InsertHotel(context.Context, *types.Hotel) (*types.Hotel, error)
 	Update(context.Context, bson.M, bson.M) error
 	GetHotels(context.Context, bson.M) ([]*types.Hotel, error)
-	GetHotelByID(context.Context, primitive.ObjectID) (*types.Hotel, error) //29.23
+	GetHotelByID(context.Context, primitive.ObjectID) (*types.Hotel, error) 
 }
 
 type MongoHotelStore struct {
