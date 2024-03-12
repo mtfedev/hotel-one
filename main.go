@@ -42,6 +42,8 @@ func main() {
 		app          = fiber.New(config)
 		apiv1        = app.Group("api/v1", middleware.JWTAuthentication)
 	)
+	// Auth
+	apiv1.Post("/auth", userHandler.HandleAuthenticate)
 
 	// User Handlers
 	apiv1.Put("/user/:id", userHandler.HandlePutUser)
