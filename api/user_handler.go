@@ -21,19 +21,6 @@ func NewUserHandler(userStore db.UserStore) *UserHadler {
 	}
 }
 
-type AuthParams struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func (h *UserHadler) HandleAuthenticate(c *fiber.Ctx) error {
-	var AuthParams AuthParams
-	if err := c.BodyParser(&AuthParams); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (h *UserHadler) HandlePutUser(c *fiber.Ctx) error {
 	var (
 		//values bson.M

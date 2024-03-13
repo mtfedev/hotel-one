@@ -39,12 +39,15 @@ func main() {
 		}
 		userHandler  = api.NewUserHandler(userStore)
 		hotelHandler = api.NewHotelHandler(store)
+		authHandeler = api.NewAuthHandler(userStore)
 		app          = fiber.New(config)
-		apiv1        = app.Group("api/v1", middleware.JWTAuthentication)
+		auth         = app.Group("/api")
+		apiv1        = app.Group("/api/v1", middleware.JWTAuthentication)
 	)
 	// Auth
-	apiv1.Post("/auth", userHandler.HandleAuthenticate)
+	auth.Post("/auth", authHandeler.HandleAuthenticate)
 
+	// vesisoned api ruters
 	// User Handlers
 	apiv1.Put("/user/:id", userHandler.HandlePutUser)
 	apiv1.Delete("/user/:id", userHandler.HandleDeleteUser)
