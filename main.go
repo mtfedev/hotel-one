@@ -45,7 +45,7 @@ func main() {
 		apiv1        = app.Group("/api/v1", middleware.JWTAuthentication)
 	)
 	// Auth
-	auth.Post("/auth", authHandeler.HandleAuthenticate)
+	auth.Post("/auth", authHandeler.HandleAuthenticate) //23:35
 
 	// vesisoned api ruters
 	// User Handlers

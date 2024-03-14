@@ -1,10 +1,13 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mtfedev/hotel-one/db"
+	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandeler struct {
@@ -23,10 +26,23 @@ type AuthParams struct {
 }
 
 func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
-	var AuthParams AuthParams
-	if err := c.BodyParser(&AuthParams); err != nil {
+	var params AuthParams
+	if err := c.BodyParser(&params); err != nil {
 		return err
 	}
-	fmt.Println(AuthParams)
+	user, err := h.userStore.GetUserByEmail(c.Context(), params.Email)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return fmt.Errorf("invalid credentials")
+		}
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword), []byte(params.Password))
+	if err != nil {
+		return fmt.Errorf("invalid credentials")
+	}
+	fmt.Println("autheticated", user)
+
 	return nil
 }

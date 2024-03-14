@@ -29,7 +29,7 @@ func parseToken(tokenStr string) error {
 			return nil, fmt.Errorf("unauthorized")
 		}
 		secret := os.Getenv("JWT_SICRET")
-		fmt.Println("NEVER PRINT SECRET")
+		fmt.Println("NEVER PRINT SECRET", secret)
 		return []byte(secret), nil
 	})
 
