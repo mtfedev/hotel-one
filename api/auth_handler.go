@@ -3,11 +3,14 @@ package api
 import (
 	"errors"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/mtfedev/hotel-one/db"
+	"github.com/mtfedev/hotel-one/types"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandeler struct {
@@ -25,6 +28,11 @@ type AuthParams struct {
 	Password string `json:"password"`
 }
 
+type AuthResponse struct {
+	User  *types.User `json:"user"`
+	token string      `json:"token"`
+}
+
 func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
 	var params AuthParams
 	if err := c.BodyParser(&params); err != nil {
@@ -38,11 +46,30 @@ func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
 		return err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword), []byte(params.Password))
-	if err != nil {
+	if !types.IsValidPassword(user.EncryptedPassword, params.Password) {
 		return fmt.Errorf("invalid credentials")
-	}
-	fmt.Println("autheticated", user)
 
-	return nil
+	}
+	resp := AuthResponse{
+		User:  user,
+		token: createTotenFromUser(user),
+	}
+	return c.JSON(resp)
+}
+
+func createTotenFromUser(user *types.User) string {
+	now := time.Now()
+	validTill := now.Add(time.Hour * 4)
+	claims := jwt.MapClaims{
+		"id":        user.ID,
+		"emial":     user.Email,
+		"validTill": validTill,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	secret := os.Getenv("JWT_SECRET")
+	tokenStr, err := token.SignedString(secret)
+	if err != nil {
+		fmt.Println("failed to sing to token with secert")
+	}
+	return tokenStr
 }
