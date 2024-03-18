@@ -9,37 +9,40 @@ import (
 )
 
 func JWTAuthentication(c *fiber.Ctx) error {
-	fmt.Println("-- JWT auth")
-
 	token, ok := c.GetReqHeaders()["X-Api-Token"]
 	if !ok {
+		fmt.Println("token not ptesnt in the header")
 		return fmt.Errorf("unauthorized")
 	}
 
-	if err := parseToken(token); err != nil {
+	claims, err := validateToken(token)
+	if err != nil {
 		return err
 	}
+	fmt.Println(claims)
 	return nil
 }
 
-func parseToken(tokenStr string) error {
+func validateToken(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			fmt.Println("ivalet single method", token.Header["alg"])
 			return nil, fmt.Errorf("unauthorized")
 		}
 		secret := os.Getenv("JWT_SICRET")
-		fmt.Println("NEVER PRINT SECRET", secret)
 		return []byte(secret), nil
 	})
 
 	if err != nil {
 		fmt.Println("failed to parse JWT tocken", err)
-		return fmt.Errorf("unauthorized")
+		return nil, fmt.Errorf("unauthorized")
 	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Println(claims)
+	if !token.Valid {
+		fmt.Errorf("ivalid token")
 	}
-	return fmt.Errorf("unauthorized")
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
+	}
+	return claims, nil
 }

@@ -30,7 +30,7 @@ type AuthParams struct {
 
 type AuthResponse struct {
 	User  *types.User `json:"user"`
-	token string      `json:"token"`
+	Token string      `json:"token"`
 }
 
 func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
@@ -52,7 +52,7 @@ func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
 	}
 	resp := AuthResponse{
 		User:  user,
-		token: createTotenFromUser(user),
+		Token: createTotenFromUser(user),
 	}
 	return c.JSON(resp)
 }
@@ -67,9 +67,9 @@ func createTotenFromUser(user *types.User) string {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	secret := os.Getenv("JWT_SECRET")
-	tokenStr, err := token.SignedString(secret)
+	tokenStr, err := token.SignedString([]byte(secret))
 	if err != nil {
-		fmt.Println("failed to sing to token with secert")
+		fmt.Println("failed to sing to token with secert", err)
 	}
 	return tokenStr
 }
