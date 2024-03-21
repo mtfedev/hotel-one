@@ -47,7 +47,7 @@ func main() {
 	// Auth
 	auth.Post("/auth", authHandeler.HandleAuthenticate)
 
-	// vesisoned api ruters
+	// Vesisoned API routes
 	// User Handlers
 	apiv1.Put("/user/:id", userHandler.HandlePutUser)
 	apiv1.Delete("/user/:id", userHandler.HandleDeleteUser)
