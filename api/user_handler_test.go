@@ -36,7 +36,7 @@ func setup(t *testing.T) *testdb {
 		log.Fatal(err)
 	}
 	return &testdb{
-		UserStore: db.NewMongoUserStore(client), //3:50
+		UserStore: db.NewMongoUserStore(client),
 	}
 }
 func TestPostUser(t *testing.T) {
