@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,9 +14,9 @@ import (
 	"github.com/mtfedev/hotel-one/types"
 )
 
-func InsertTestUser(t.testing.T,userStore db.UserStore) *types.User {
+func InsertTestUser(t *testing.T, userStore db.UserStore) *types.User {
 	user, err := types.NewUserFromParams(types.CreateUserParams{
-		Email:     "james@wp.pl",
+		Email:     "james@wp.com",
 		FirstName: "james",
 		LastName:  "foo",
 		Password:  "superpassword",
@@ -29,13 +28,13 @@ func InsertTestUser(t.testing.T,userStore db.UserStore) *types.User {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return user 
+	return user
 }
 
-func TestAuthenticate(t *testing.T) {
+func TestAuthenticateSuccess(t *testing.T) {
 	tdb := setup(t)
 	defer tdb.teardown(t)
-	InsertTestUser(t, tdb.UserStore)
+	insrtedUser := InsertTestUser(t, tdb.UserStore)
 
 	app := fiber.New()
 	authHandler := NewAuthHandler(tdb.UserStore)
@@ -48,6 +47,7 @@ func TestAuthenticate(t *testing.T) {
 
 	b, _ := json.Marshal(params)
 	req := httptest.NewRequest("POST", "/auth ", bytes.NewReader(b))
+	req.Header.Add("Content-Type", "application/json")
 	resp, err := app.Test(req)
 	if err != nil {
 		t.Fatal(err)
@@ -60,7 +60,11 @@ func TestAuthenticate(t *testing.T) {
 		t.Error(err)
 	}
 
-	fmt.Println(resp)
-}
+	if authResp.Token == "" {
+		t.Fatalf("expected the JWT token to be present in the auth respose")
+	}
+	if !reflect.DeepEqual(insrtedUser, authResp.User) {
+		t.Fatalf("expected the user to be tje inserted user") //19:00
 
-//11:00
+	}
+}
