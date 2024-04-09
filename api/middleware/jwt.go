@@ -16,7 +16,7 @@ func JWTAuthentication(c *fiber.Ctx) error {
 		return fmt.Errorf("unauthorized")
 	}
 
-	claims, err := validateToken(token)
+	claims, err := validateToken(token[0])
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func validateToken(tokenStr string) (jwt.MapClaims, error) {
 		return nil, fmt.Errorf("unauthorized")
 	}
 	if !token.Valid {
-		fmt.Errorf("ivalid token")
+		return nil, fmt.Errorf("ivalid token")
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {

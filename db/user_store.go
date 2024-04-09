@@ -43,10 +43,9 @@ func (s *MongoUserStore) Drop(ctx context.Context) error {
 
 func (s *MongoUserStore) UpdateUser(ctx context.Context, filter bson.M, params types.UpateUserParams) error {
 
-	update := bson.D{
-		{
-			"$set", params.ToBSONM(),
-		},
+	update := bson.M{
+
+		"$set": params.ToBSONM(),
 	}
 
 	_, err := s.coll.UpdateOne(ctx, filter, update)
@@ -61,7 +60,7 @@ func (s *MongoUserStore) DeleteUser(ctx context.Context, id string) error {
 	if err != nil {
 		return err
 	}
-	// todo
+
 	_, err = s.coll.DeleteOne(ctx, bson.M{"_id": oid})
 	if err != nil {
 		return err

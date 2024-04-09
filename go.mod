@@ -4,12 +4,9 @@ go 1.21.5
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.0
-	github.com/gofiber/fiber/v3 v3.0.0-20240405062939-c8c51ee78331
 	go.mongodb.org/mongo-driver v1.13.2
 	golang.org/x/crypto v0.19.0
 )
-
-require github.com/gofiber/utils/v2 v2.0.0-beta.4 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect

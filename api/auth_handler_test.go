@@ -30,9 +30,47 @@ func InsertTestUser(t *testing.T, userStore db.UserStore) *types.User {
 	}
 	return user
 }
+func TestAuthenticateWithWrongPassword(t *testing.T) {
+	tdb := setup()
+	defer tdb.teardown(t)
+	insrtedUser := InsertTestUser(t, tdb.UserStore)
+
+	app := fiber.New()
+	authHandler := NewAuthHandler(tdb.UserStore)
+	app.Post("/auth", authHandler.HandleAuthenticate)
+
+	params := AuthParams{
+		Email:    "james@wp.com",
+		Password: "superpasswordnotcorrect",
+	}
+
+	b, _ := json.Marshal(params)
+	req := httptest.NewRequest("POST", "/auth ", bytes.NewReader(b))
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := app.Test(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expcted http status of 200 but got %d", resp.StatusCode)
+	}
+	var authResp AuthResponse
+	if err := json.NewDecoder(resp.Body).Decode(&authResp); err != nil {
+		t.Error(err)
+	}
+
+	if authResp.Token == "" {
+		t.Fatalf("expected the JWT token to be present in the auth respose")
+	}
+	insrtedUser.EncryptedPassword = ""
+	if !reflect.DeepEqual(insrtedUser, authResp.User) {
+		t.Fatalf("expected the user to be tje inserted user")
+
+	}
+}
 
 func TestAuthenticateSuccess(t *testing.T) {
-	tdb := setup(t)
+	tdb := setup()
 	defer tdb.teardown(t)
 	insrtedUser := InsertTestUser(t, tdb.UserStore)
 
@@ -63,8 +101,9 @@ func TestAuthenticateSuccess(t *testing.T) {
 	if authResp.Token == "" {
 		t.Fatalf("expected the JWT token to be present in the auth respose")
 	}
+	insrtedUser.EncryptedPassword = ""
 	if !reflect.DeepEqual(insrtedUser, authResp.User) {
-		t.Fatalf("expected the user to be tje inserted user") //19:00
+		t.Fatalf("expected the user to be tje inserted user")
 
 	}
 }
