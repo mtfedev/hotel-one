@@ -33,6 +33,11 @@ type AuthResponse struct {
 	Token string      `json:"token"`
 }
 
+type invalidCredentialsResp struct {
+	Status int    `json:"status"`
+	Mesg   string `json:"msg"`
+}
+
 func (h *AuthHandeler) HandleAuthenticate(c *fiber.Ctx) error {
 	var params AuthParams
 	if err := c.BodyParser(&params); err != nil {

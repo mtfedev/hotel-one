@@ -41,7 +41,7 @@ func TestAuthenticateWithWrongPassword(t *testing.T) {
 
 	params := AuthParams{
 		Email:    "james@wp.com",
-		Password: "superpasswordnotcorrect",
+		Password: "superpasswordnotcorrect", //23:00
 	}
 
 	b, _ := json.Marshal(params)
