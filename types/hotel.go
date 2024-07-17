@@ -26,3 +26,5 @@ type Room struct {
 	Prise   float64            `bson:"prise" json:"prise"`
 	HotelID primitive.ObjectID `bson:"hotelID" json:"hotelID"`
 }
+
+//here
